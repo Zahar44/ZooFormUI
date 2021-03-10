@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210307122707_BaseAnimal.cs" />
+    <Compile Remove="Migrations\20210307122707_BaseAnimal.Designer.cs" />
+    <Compile Remove="Migrations\20210307124203_Test.cs" />
+    <Compile Remove="Migrations\20210307124203_Test.Designer.cs" />
+    <Compile Remove="Migrations\20210307133117_ZooKeeper.cs" />
+    <Compile Remove="Migrations\20210307133117_ZooKeeper.Designer.cs" />
+    <Compile Remove="Migrations\20210307133547_Initial.cs" />
+    <Compile Remove="Migrations\20210307133547_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20210307133717_ZooKeeper.cs" />
+    <Compile Remove="Migrations\20210307133717_ZooKeeper.Designer.cs" />
+    <Compile Remove="Migrations\20210307134114_Initial.cs" />
+    <Compile Remove="Migrations\20210307134114_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20210307141750_Animal.cs" />
+    <Compile Remove="Migrations\20210307141750_Animal.Designer.cs" />
+    <Compile Remove="Migrations\20210307141921_Animal.cs" />
+    <Compile Remove="Migrations\20210307141921_Animal.Designer.cs" />
+    <Compile Remove="Migrations\20210307142225_ZooKeeper.cs" />
+    <Compile Remove="Migrations\20210307142225_ZooKeeper.Designer.cs" />
+    <Compile Remove="Migrations\20210307142551_ZooKeeper.cs" />
+    <Compile Remove="Migrations\20210307142551_ZooKeeper.Designer.cs" />
+    <Compile Remove="Migrations\20210307142627_ZooKeeper.cs" />
+    <Compile Remove="Migrations\20210307142627_ZooKeeper.Designer.cs" />
+    <Compile Remove="Migrations\20210309144527_FixForAnimal.cs" />
+    <Compile Remove="Migrations\20210309144527_FixForAnimal.Designer.cs" />
+    <Compile Remove="Migrations\20210309144818_FixForAnimal.cs" />
+    <Compile Remove="Migrations\20210309144818_FixForAnimal.Designer.cs" />
+    <Compile Remove="Migrations\20210309145012_FixForAnimal.cs" />
+    <Compile Remove="Migrations\20210309145012_FixForAnimal.Designer.cs" />
+    <Compile Remove="Migrations\20210309145347_FixForAnimal.cs" />
+    <Compile Remove="Migrations\20210309145347_FixForAnimal.Designer.cs" />
+    <Compile Remove="Migrations\20210309145731_AnimalAndZooKeepers.cs" />
+    <Compile Remove="Migrations\20210309145731_AnimalAndZooKeepers.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
