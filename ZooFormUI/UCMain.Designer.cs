@@ -36,6 +36,7 @@ namespace ZooFormUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "UCMain";
+            this.Load += new System.EventHandler(this.UCMain_Load);
             this.ResumeLayout(false);
 
         }

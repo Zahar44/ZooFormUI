@@ -17,6 +17,9 @@ namespace ZooFormUI.Database
             Name = "unset";
             Family = family.unknown;
         }
-
+        public override string ToString()
+        {
+            return String.Format(Name);
+        }
     }
 }

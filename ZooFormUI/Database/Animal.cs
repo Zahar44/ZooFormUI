@@ -22,5 +22,10 @@ namespace ZooFormUI
 
         public ICollection<AnimalFood> AnimalFoods { get; set; }
         public Aviary Aviary { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format(Name);
+        }
     }
 }

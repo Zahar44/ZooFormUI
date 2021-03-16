@@ -13,5 +13,10 @@ namespace ZooFormUI.Database
         public bool Freeze { get; set; }
         public DateTime RotAt { get; set; }
         public ICollection<AnimalFood> AnimalFoods { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format(Name);
+        }
     }
 }

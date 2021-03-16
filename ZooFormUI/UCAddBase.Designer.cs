@@ -1,15 +1,15 @@
 ﻿
 namespace ZooFormUI
 {
-    partial class MainMenu
+    partial class UCAddBase
     {
-        /// <summary>
-        ///  Required designer variable.
+        /// <summary> 
+        /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        ///  Clean up any resources being used.
+        /// <summary> 
+        /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -21,27 +21,22 @@ namespace ZooFormUI
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             this.SuspendLayout();
             // 
-            // MainMenu
+            // UCAddBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(405, 448);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MainMenu";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ZooHelper";
-            this.Load += new System.EventHandler(this.MainMenu_Load);
+            this.Name = "UCAddBase";
+            this.Load += new System.EventHandler(this.UCAddBase_Load);
             this.ResumeLayout(false);
 
         }
@@ -49,4 +44,3 @@ namespace ZooFormUI
         #endregion
     }
 }
-

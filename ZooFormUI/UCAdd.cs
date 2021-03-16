@@ -3,86 +3,70 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ZooFormUI.Database;
 
 namespace ZooFormUI
 {
-    public partial class UCAdd : UserControl
+    public partial class UCAdd : UCAddBase
     {
-        static private UCAdd _instanse;
-        static public UCAdd Instanse
+        private static Field<UCAdd> _instanse;
+        public static UCAdd Instanse
         {
             get
             {
                 if (_instanse == null)
-                    throw new NoNullAllowedException("");
-                return _instanse;
+                    _instanse = new UCAdd();
+                return _instanse.getInstance();
             }
+            set => _instanse = value;
         }
-
         static public void SetInstanse(string sender)
         {
-            if (_instanse == null)
-                _instanse = new UCAdd();
             switch (sender)
             {
                 case "Animal":
-                    _instanse.UCAdd_LoadAnimal();
+                    Instanse.LoadAnimalBase();
+                    break;
+                case "Employee":
+                    Instanse.LoadEmployeeBase();
                     break;
                 default:
+                    throw new Exception("Add: wrong statement value");
                     break;
             }
         }
-        public UCAdd()
+        public UCAdd() : base()
         {
-            InitializeComponent();
         }
-
-        private void UCAdd_LoadBase()
+        protected override void BtnAccept_Click_Animal(object sender, EventArgs e)
         {
-            this.Width = 300;
-            this.Height = 400;
-            Button btnAccept = new Button();
-            btnAccept.Width = 100;
-            btnAccept.Height = 50;
-            btnAccept.Text = "Accept";
-            btnAccept.Click += BtnAccept_Click;
-            btnAccept.Location = new Point((this.Width - btnAccept.Width) / 2, this.Bottom - btnAccept.Height - 100);
-            this.Controls.Add(btnAccept);
+            using (ZooDbContext db = new ZooDbContext())
+            {
+                Animal animal = new Animal();
+                animal.Name = Controls["Name"].Text;
+                animal.ZooKeeper = db.ZooKeepers
+                    .Where(x => x.Name == Controls["ZooKeeper"].Text)
+                    .FirstOrDefault();
+
+                db.Animals.Add(animal);
+                db.SaveChanges();
+                LoadAnimalBase();
+            }
         }
-
-        private void UCAdd_LoadAnimal()
+        protected override void BtnAccept_Click_Employee(object sender, EventArgs e)
         {
-            UCAdd_LoadBase();
+            using (ZooDbContext db = new ZooDbContext())
+            {
+               ZooKeeper zooKeeper = new ZooKeeper();
+               zooKeeper.Name = this.Controls["Name"].Text;
 
-            Label labelKind = new Label();
-            labelKind.Location = new Point(20, 25);
-            labelKind.Text = "Name:";
-            labelKind.Width = 50;
-            TextBox boxName = new TextBox();
-            boxName.Name = "Name";
-            boxName.Height = 20;
-            boxName.Location = new Point(100, 20);
-
-            this.Controls.AddRange(new[] { labelKind});
-            this.Controls.AddRange(new[] { boxName});
-        }
-
-        private void BtnAccept_Click(object sender, EventArgs e)
-        {
-            Animal animal = new Animal();
-            animal.Name = this.Controls["Name"].Text;
-            animal.ZooKeeper = new ZooKeeper();
-
-            if(animal != null)
-                using(ZooDbContext db = new ZooDbContext())
-                {
-                    db.Animals.Add(animal);
-                    db.SaveChanges();
-                }
-            UCDBManager.Instanse.BringToFront();
+               db.ZooKeepers.Add(zooKeeper);
+               db.SaveChanges();
+               LoadEmployeeBase();
+            }
         }
     }
 }

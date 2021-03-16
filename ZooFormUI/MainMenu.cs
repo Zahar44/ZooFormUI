@@ -7,43 +7,57 @@ namespace ZooFormUI
 {
     public partial class MainMenu : Form
     {
-        public MainMenu()
-        {
-            InitializeComponent();
-        }
-        static MainMenu _obj;
+        private static Field<MainMenu> _instanse;
         public static MainMenu Instanse
         {
             get
             {
-                if (_obj == null)
-                {
-                    _obj = new MainMenu();
-                }
-                return _obj;
+                if (_instanse == null)
+                    _instanse = new MainMenu();
+                return _instanse.getInstance();
             }
-        }
-        static Panel panel;
-        public static Panel panelContainer
-        {
-            get{ return panel; }
-            set { panel = value; }
+            set => _instanse = value;
         }
 
+        private static Field<Panel> _panel;
+        public static Panel Panel
+        {
+            get
+            {
+                if (_panel == null)
+                    _panel = new Panel();
+                return _panel.getInstance();
+            }
+            set => _panel = value;
+        }
+        public MainMenu()
+        {
+            InitializeComponent();
+        }
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            this.Width  = 300;
+            this.Width = 300;
             this.Height = 400;
+            
+            _instanse = this;
 
-            _obj = this;
-            panel = new Panel();
-            panel.Width = Width;
-            panel.Height = Height;
-            panel.Location = new Point(0, 0);
-            this.Controls.Add(panel);
+            Panel.Dock = DockStyle.Fill;
+            this.Controls.Add(Panel);
+            Panel.Controls.Add(new UCMain());
+        }
 
-            panel.Controls.Add(UCMain.Instanse);
-            UCMain.Instanse.BringToFront();
+        delegate void SetNewSizeCallback(object size);
+        public void SetNewSize(object size)
+        {
+            if (InvokeRequired)
+            {
+                SetNewSizeCallback d = new SetNewSizeCallback(SetNewSize);
+                Invoke(d, new object[] { size });
+            }
+            else
+            {
+                Size = (Size)size;
+            }
         }
     }
 }

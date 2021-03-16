@@ -14,5 +14,10 @@ namespace ZooFormUI.Database
         public int MaxAnimalsSize { get; set; }
         public ICollection<Kind> CanHold { get; set; }
         public ICollection<Animal> Animals { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format(Address);
+        }
     }
 }

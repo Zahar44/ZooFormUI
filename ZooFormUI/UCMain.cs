@@ -4,29 +4,33 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ZooFormUI
 {
     public partial class UCMain : UserControl
     {
-        static private UCMain _instanse;
-        static public UCMain Instanse
+        private static Field<UCMain> _instanse;
+        public static UCMain Instanse
         {
-            get
+            get 
             {
                 if (_instanse == null)
                     _instanse = new UCMain();
-                return _instanse;
-            }
+               return _instanse.getInstance();
+            } 
+            set => _instanse = value;
         }
         public UCMain()
         {
+            Thread create = new Thread(new ThreadStart(delegate {
+                var instanse1 = UCDBManager.Instanse;
+            }));
+            create.Start();
             InitializeComponent();
-            UCMain_Load();
         }
-
-        private void UCMain_Load()
+        private void UCMain_Load(object sender, EventArgs e)
         {
             this.Width = 300;
             this.Height = 400;
@@ -40,15 +44,7 @@ namespace ZooFormUI
                 buttons[i].Location = new Point((this.Width - buttons[i].Width) / 2 - 5, (buttons[i].Height * buttons.Count + 10 * i) - 20);
             }
             buttons[0].Text = "DBManager";
-            buttons[0].Click += (sender, e) =>
-            {
-                if (!MainMenu.panelContainer.Contains(UCDBManager.Instanse))
-                {
-                    MainMenu.panelContainer.Controls.Add(UCDBManager.Instanse);
-                    UCDBManager.Instanse.Dock = DockStyle.Fill;
-                }
-                UCDBManager.Instanse.BringToFront();
-            };
+            buttons[0].Click += (sender, e) => { UCDBManager.Instanse.BringToFrontOrCreate(); };
 
             buttons[1].Text = "Settings";
 
