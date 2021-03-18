@@ -27,20 +27,21 @@ namespace ZooFormUI
         {
             InitializeComponent();
         }
-        static public void SetInstanse(string sender, object entity)
+        public override void Set(string sender, object entity)
         {
-            UCEdit.Instanse.Entity = entity;
             switch (sender)
             {
                 case "Animal":
-                    Instanse.LoadAnimal();
+                    Instanse.LoadAnimalBase();
                     break;
                 case "Employee":
-                    Instanse.LoadEmployee();
+                    Instanse.LoadEmployeeBase();
+                    break;
+                case "Aviary":
+                    Instanse.LoadAviaryBase();
                     break;
                 default:
                     throw new Exception("Add: wrong statement value");
-                    break;
             }
         }
         protected override void LoadAnimal()
@@ -62,6 +63,13 @@ namespace ZooFormUI
             LoadEmployeeBase();
 
         }
+        protected override void BtnBack_Click(object sender, EventArgs e) => UCFind.Instanse.BringToFrontOrCreate();
+        protected override void BtnAccept_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /*
         protected override void BtnAccept_Click_Animal(object sender, EventArgs e)
         {
             using (ZooDbContext db = new ZooDbContext())
@@ -84,6 +92,7 @@ namespace ZooFormUI
         {
             UCFind.Instanse.BringToFrontOrCreate();
         }
+        */
         private void UCEdit_Load(object sender, EventArgs e)
         {
 

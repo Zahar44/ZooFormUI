@@ -21,6 +21,7 @@ namespace ZooFormUI
         {
             this.Width = 250;
             this.Height = 275;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
 
             Button btnYes = new Button();
             btnYes.Text = "Yes";

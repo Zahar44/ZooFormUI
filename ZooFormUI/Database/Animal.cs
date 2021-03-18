@@ -12,10 +12,12 @@ namespace ZooFormUI
     {
         [Key]
         public int Id { get; set; }
-        public Kind Kind { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public bool IsPredator { get; set; }
+
+        public int KindId { get; set; }
+        public Kind Kind { get; set; }
 
         public int ZooKeeperId { get; set; }
         public ZooKeeper ZooKeeper { get; set; }

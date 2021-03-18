@@ -23,7 +23,7 @@ namespace ZooFormUI
             }
             set => _instanse = value;
         }
-        static public void SetInstanse(string sender)
+        public override void Set(string sender, object entity = null)
         {
             switch (sender)
             {
@@ -33,39 +33,55 @@ namespace ZooFormUI
                 case "Employee":
                     Instanse.LoadEmployeeBase();
                     break;
+                case "Aviary":
+                    Instanse.LoadAviaryBase();
+                    break;
                 default:
                     throw new Exception("Add: wrong statement value");
-                    break;
             }
         }
         public UCAdd() : base()
         {
         }
-        protected override void BtnAccept_Click_Animal(object sender, EventArgs e)
+        protected override void BtnBack_Click(object sender, EventArgs e) => UCDBManager.Instanse.BringToFrontOrCreate();
+        protected override void BtnAccept_Click(object sender, EventArgs e)
         {
-            using (ZooDbContext db = new ZooDbContext())
+            foreach (Control control in this.Controls)
             {
-                Animal animal = new Animal();
-                animal.Name = Controls["Name"].Text;
-                animal.ZooKeeper = db.ZooKeepers
-                    .Where(x => x.Name == Controls["ZooKeeper"].Text)
-                    .FirstOrDefault();
-
-                db.Animals.Add(animal);
-                db.SaveChanges();
-                LoadAnimalBase();
+                control.Focus();
+                if (!Validate())
+                {
+                    return;
+                }
             }
-        }
-        protected override void BtnAccept_Click_Employee(object sender, EventArgs e)
-        {
-            using (ZooDbContext db = new ZooDbContext())
+            switch (Statement)
             {
-               ZooKeeper zooKeeper = new ZooKeeper();
-               zooKeeper.Name = this.Controls["Name"].Text;
-
-               db.ZooKeepers.Add(zooKeeper);
-               db.SaveChanges();
-               LoadEmployeeBase();
+                case "Animal":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Animal;
+                        db.Animals.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Employee":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as ZooKeeper;
+                        db.ZooKeepers.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Aviary":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Aviary;
+                        db.Aviaries.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                default:
+                    throw new Exception("Add: can't find Statement");
             }
         }
     }

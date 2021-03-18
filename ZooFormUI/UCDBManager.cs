@@ -66,8 +66,10 @@ namespace ZooFormUI
             animal.Click += btnAdd_Click;
             var employee = new ToolStripMenuItem("Employee");
             employee.Click += btnAdd_Click;
+            var aviary = new ToolStripMenuItem("Aviary");
+            aviary.Click += btnAdd_Click;
 
-            addContextMenu.Items.AddRange(new[] { animal, employee });
+            addContextMenu.Items.AddRange(new[] { animal, employee, aviary });
 
             var _x = MainMenu.Instanse.Location.X + this.Controls[0].Location.X;
             var _y = MainMenu.Instanse.Location.Y + this.Controls[0].Location.Y;

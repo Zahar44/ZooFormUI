@@ -38,7 +38,8 @@ namespace ZooFormUI
         {
             this.Width = 300;
             this.Height = 400;
-            
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+
             _instanse = this;
 
             Panel.Dock = DockStyle.Fill;

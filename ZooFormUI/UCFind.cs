@@ -273,7 +273,7 @@ namespace ZooFormUI
                         else
                             commonA--;
                     }
-                    commonA -= Math.Abs(Controls["Find"].Text.Length - a.Length);
+                    //commonA -= Math.Abs(Controls["Find"].Text.Length - a.Length);
                     for (int i = 0; i < Math.Min(b.Length, Controls["Find"].Text.Length); i++)
                     {
                         if (b[i].ToString().ToLower() == Controls["Find"].Text[i].ToString().ToLower())
@@ -281,7 +281,7 @@ namespace ZooFormUI
                         else
                             commonB--;
                     }
-                    commonB -= Math.Abs(Controls["Find"].Text.Length - b.Length);
+                    //commonB -= Math.Abs(Controls["Find"].Text.Length - b.Length);
                     return commonB.CompareTo(commonA);
                 }
             });
