@@ -3,86 +3,112 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZooFormUI.Database;
 
 namespace ZooFormUI
 {
-    public partial class UCAdd : UserControl
+    public partial class UCAdd : UCAddBase
     {
-        static private UCAdd _instanse;
-        static public UCAdd Instanse
+        private static Field<UCAdd> _instanse;
+        public static UCAdd Instanse
         {
             get
             {
                 if (_instanse == null)
-                    throw new NoNullAllowedException("");
-                return _instanse;
+                    _instanse = new UCAdd();
+                return _instanse.getInstance();
             }
+            set => _instanse = value;
         }
-
-        static public void SetInstanse(string sender)
+        public UCAdd() : base()
         {
-            if (_instanse == null)
-                _instanse = new UCAdd();
+        }
+        public override async Task Set(string sender, object entity = null)
+        {
             switch (sender)
             {
                 case "Animal":
-                    _instanse.UCAdd_LoadAnimal();
+                    await Instanse.LoadAnimalAsync();
+                    break;
+                case "Employee":
+                    await Instanse.LoadEmployeeAsync();
+                    break;
+                case "Aviary":
+                    await Instanse.LoadAviaryAsync();
+                    break;
+                case "Food":
+                    await Instanse.LoadFoodAsync();
+                    break;
+                case "Kind":
+                    await Instanse.LoadKindAsync();
                     break;
                 default:
-                    break;
+                    throw new Exception("Add: wrong statement value");
             }
         }
-        public UCAdd()
+        protected override void BtnBack_Click(object sender, EventArgs e) => UCDBManager.Instanse.BringToFrontOrCreate();
+        protected override async void BtnAcceptAsync_Click(object sender, EventArgs e)
         {
-            InitializeComponent();
-        }
-
-        private void UCAdd_LoadBase()
-        {
-            this.Width = 300;
-            this.Height = 400;
-            Button btnAccept = new Button();
-            btnAccept.Width = 100;
-            btnAccept.Height = 50;
-            btnAccept.Text = "Accept";
-            btnAccept.Click += BtnAccept_Click;
-            btnAccept.Location = new Point((this.Width - btnAccept.Width) / 2, this.Bottom - btnAccept.Height - 100);
-            this.Controls.Add(btnAccept);
-        }
-
-        private void UCAdd_LoadAnimal()
-        {
-            UCAdd_LoadBase();
-
-            Label labelKind = new Label();
-            labelKind.Location = new Point(20, 25);
-            labelKind.Text = "Name:";
-            labelKind.Width = 50;
-            TextBox boxName = new TextBox();
-            boxName.Name = "Name";
-            boxName.Height = 20;
-            boxName.Location = new Point(100, 20);
-
-            this.Controls.AddRange(new[] { labelKind});
-            this.Controls.AddRange(new[] { boxName});
-        }
-
-        private void BtnAccept_Click(object sender, EventArgs e)
-        {
-            Animal animal = new Animal();
-            animal.Name = this.Controls["Name"].Text;
-            animal.ZooKeeper = new ZooKeeper();
-
-            if(animal != null)
-                using(ZooDbContext db = new ZooDbContext())
+            foreach (Control control in Controls["Panel"].Controls)
+            {
+                if (control is RadioButton)
+                    continue;
+                control.Focus();
+                if (!Validate())
                 {
-                    db.Animals.Add(animal);
-                    db.SaveChanges();
+                    return;
                 }
-            UCDBManager.Instanse.BringToFront();
+            }
+            switch (Statement)
+            {
+                case "Animal":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Animal;
+                        db.Animals.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Employee":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as ZooKeeper;
+                        db.ZooKeepers.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Aviary":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Aviary;
+                        db.Aviaries.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Food":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Food;
+                        db.Foods.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Kind":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Kind;
+                        db.Kinds.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                default:
+                    throw new Exception("Add: can't find Statement");
+            }
+            await Instanse.BringToFrontOrCreateAsync(Statement);
         }
     }
 }

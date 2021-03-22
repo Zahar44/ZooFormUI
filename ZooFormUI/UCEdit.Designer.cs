@@ -1,7 +1,7 @@
 ﻿
 namespace ZooFormUI
 {
-    partial class UCFind
+    partial class UCEdit
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,12 +31,12 @@ namespace ZooFormUI
         {
             this.SuspendLayout();
             // 
-            // UCFind
+            // UCEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "UCFind";
-            this.Load += new System.EventHandler(this.UCFind_Load);
+            this.Name = "UCEdit";
+            this.Load += new System.EventHandler(this.UCEdit_Load);
             this.ResumeLayout(false);
 
         }

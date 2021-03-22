@@ -39,6 +39,8 @@
     <Compile Remove="Migrations\20210309145347_FixForAnimal.Designer.cs" />
     <Compile Remove="Migrations\20210309145731_AnimalAndZooKeepers.cs" />
     <Compile Remove="Migrations\20210309145731_AnimalAndZooKeepers.Designer.cs" />
+    <Compile Remove="Migrations\20210317205126_KindID.cs" />
+    <Compile Remove="Migrations\20210317205126_KindID.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
