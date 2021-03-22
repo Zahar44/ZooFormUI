@@ -44,21 +44,9 @@ namespace ZooFormUI
 
             Panel.Dock = DockStyle.Fill;
             this.Controls.Add(Panel);
-            Panel.Controls.Add(new UCMain());
+            Panel.Controls.Add(UCMain.Instanse);
         }
 
         delegate void SetNewSizeCallback(object size);
-        public void SetNewSize(object size)
-        {
-            if (InvokeRequired)
-            {
-                SetNewSizeCallback d = new SetNewSizeCallback(SetNewSize);
-                Invoke(d, new object[] { size });
-            }
-            else
-            {
-                Size = (Size)size;
-            }
-        }
     }
 }

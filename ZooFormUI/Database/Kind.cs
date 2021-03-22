@@ -8,12 +8,9 @@ namespace ZooFormUI.Database
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool isWormBlooded { get; set; }
+        public bool IsWormBlooded { get; set; }
         public string Description { get; set; }
         public string Сonditions { get; set; }
-        public override string ToString()
-        {
-            return String.Format(Name);
-        }
+        public override string ToString() => Name;
     }
 }

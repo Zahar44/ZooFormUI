@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ZooFormUI
@@ -24,15 +25,14 @@ namespace ZooFormUI
         }
         public UCDBManager()
         {
-            Thread create = new Thread(new ThreadStart(delegate {
-                var instanse1 = UCAdd.Instanse;
-                var instanse2 = UCFind.Instanse;
-            }));
-            create.Start();
+            var tasks = new List<Task>();
+            tasks.Add(Task.Run(() => { var a = UCAdd.Instanse;  }));
+            tasks.Add(Task.Run(() => { var a = UCFind.Instanse; }));
+
             InitializeComponent();
-            UCDBManager_Load(this, new EventArgs());
+            Task.WhenAll(tasks);
         }
-        private void UCDBManager_Load(object sender, EventArgs e)
+        private async void UCDBManager_Load(object sender, EventArgs e)
         {
             this.Width = 300;
             this.Height = 400;
@@ -47,38 +47,56 @@ namespace ZooFormUI
                     (this.Width - buttons[i].Width) / 2 - 5, (buttons[i].Height * buttons.Count + 10 * i) - 20
                     );
             }
-            buttons[0].Text = "Add";
-            buttons[0].Click += btnAdd_ClickContext;
 
-            buttons[1].Text = "Find";
-            buttons[1].Click += (sender, e) => { UCFind.Instanse.BringToFrontOrCreate(); };
+            Button btnAdd = await MakeBtnAsync("Add", 0);
+            btnAdd.Click += btnAdd_ClickContext;
+            
+            Button btnFind = await MakeBtnAsync("Find", 1);
+            btnFind.Click += (sender, e) => { _ = UCFind.Instanse.BringToFrontOrCreateAsync(); };
+            
+            Button btnBack = await MakeBtnAsync("Back", 2);
+            btnBack.Click += (sender, e) => { UCMain.Instanse.BringToFrontOrCreate(); };
 
-            buttons[2].Text = "Back";
-            buttons[2].Click += (sender, e) => { UCMain.Instanse.BringToFrontOrCreate(); };
-
-            this.Controls.AddRange(buttons.ToArray());
+            this.Controls.AddRange(new Control[] { btnAdd, btnFind, btnBack });
+        }
+        private async Task<Button> MakeBtnAsync(string name, int pos)
+        {
+            return await Task.Run(() => {
+                return new Button
+                {
+                    Name = name,
+                    Text = name,
+                    Height = 80,
+                    Width = 160,
+                    Location = new Point(65, 47 + 95 * pos),
+                };
+            });
         }
         private void btnAdd_ClickContext(object sender, EventArgs e)
         {
             var addContextMenu = new ContextMenuStrip();
 
             var animal = new ToolStripMenuItem("Animal");
-            animal.Click += btnAdd_Click;
+            animal.Click += btnAddAsync_Click;
+            var kind = new ToolStripMenuItem("Kind");
+            kind.Click += btnAddAsync_Click;
             var employee = new ToolStripMenuItem("Employee");
-            employee.Click += btnAdd_Click;
+            employee.Click += btnAddAsync_Click;
             var aviary = new ToolStripMenuItem("Aviary");
-            aviary.Click += btnAdd_Click;
+            aviary.Click += btnAddAsync_Click;
+            var food = new ToolStripMenuItem("Food");
+            food.Click += btnAddAsync_Click;
 
-            addContextMenu.Items.AddRange(new[] { animal, employee, aviary });
+            addContextMenu.Items.AddRange(new[] { animal, kind, employee, aviary, food });
 
             var _x = MainMenu.Instanse.Location.X + this.Controls[0].Location.X;
             var _y = MainMenu.Instanse.Location.Y + this.Controls[0].Location.Y;
 
             addContextMenu.Show(new Point(_x, _y));
         }
-        private void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAddAsync_Click(object sender, EventArgs e)
         {
-            UCAdd.Instanse.BringToFrontOrCreate(sender);
+            await UCAdd.Instanse.BringToFrontOrCreateAsync(sender);
         }
     }
 }

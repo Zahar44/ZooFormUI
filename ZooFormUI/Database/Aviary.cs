@@ -15,9 +15,6 @@ namespace ZooFormUI.Database
         public ICollection<Kind> CanHold { get; set; }
         public ICollection<Animal> Animals { get; set; }
 
-        public override string ToString()
-        {
-            return String.Format(Address);
-        }
+        public override string ToString() => Address;
     }
 }

@@ -16,22 +16,20 @@ namespace ZooFormUI
         [STAThread]
         static void Main()
         {
-            //DateTime start = DateTime.Now;
-            Thread conn = new Thread(new ThreadStart(Connection));
-            conn.Start();
-            //Connection();
-            //TimeSpan end = DateTime.Now - start;
-            //MessageBox.Show(end.TotalSeconds.ToString());
+            _ = Connection();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainMenu());
         }
-        static void Connection()
+        static async Task Connection()
         {
-            using (ZooDbContext db = new ZooDbContext())
+            await Task.Run(() =>
             {
-            }
+                ZooDbContext db = new ZooDbContext();
+                db.SaveChanges();
+            });
+            ZooDbContext.Connected = true;
         }
     }
 }

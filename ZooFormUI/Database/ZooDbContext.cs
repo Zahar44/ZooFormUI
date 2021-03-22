@@ -4,6 +4,16 @@ namespace ZooFormUI.Database
 {
     class ZooDbContext : DbContext, IZooDbContext
     {
+        private static bool _conn = false;
+        public static bool Connected
+        {
+            get { return _conn; }
+            set
+            {
+                _conn = value;
+                UCMain.Instanse.OnDBConnected(null, new System.EventArgs(), _conn);
+            }
+        }
         public DbSet<Animal> Animals { get; set; }
         public DbSet<ZooKeeper> ZooKeepers { get; set; }
         public DbSet<Aviary> Aviaries { get; set; }

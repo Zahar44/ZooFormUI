@@ -13,6 +13,9 @@ namespace ZooFormUI
 {
     public partial class UCFind : UserControl
     {
+        private object Buffer { get; set; }
+        private EventArgs LastEvent { get;set; }
+        
         private static Field<UCFind> _instanse;
         public static UCFind Instanse
         {
@@ -104,7 +107,7 @@ namespace ZooFormUI
         }
         private void BtnEdit_Click(object sender, EventArgs e)
         {
-            UCEdit.Instanse.BringToFrontOrCreate(LastFindedOption, FindBox.SelectedItem);
+            _ = UCEdit.Instanse.BringToFrontOrCreateAsync(LastFindedOption, FindBox.SelectedItem);
         }
         private void BtnDelete_Click(object sender, EventArgs e)
         {
@@ -161,9 +164,11 @@ namespace ZooFormUI
                     var response = db.Aviaries
                         .Where(x => x.Id == entity.Id)
                         .FirstOrDefault();
+                    Buffer = response;
                     db.Aviaries.Remove(response);
                     db.SaveChanges();
                 }
+            LastEvent = e;
             ShowData(LastFindedOption);
         }
         public void ShowData(string findValue)
@@ -178,6 +183,13 @@ namespace ZooFormUI
                     using (ZooDbContext db = new ZooDbContext())
                     {
                         var all = db.Animals.ToList();
+                        FindBox.Items.AddRange(all.Cast<object>().ToArray());
+                    }
+                    break;
+                case "Kind":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var all = db.Kinds.ToList();
                         FindBox.Items.AddRange(all.Cast<object>().ToArray());
                     }
                     break;
@@ -209,6 +221,26 @@ namespace ZooFormUI
             FindBox.EndUpdate();
             LastFindedOption = findValue;
         }
+        private string FindPopUpInfo_Employee()
+        {
+            ZooKeeper entity;
+            using (ZooDbContext db = new ZooDbContext())
+            {
+                entity = db.ZooKeepers
+                    .Include(x => x.Animals)
+                    .Where(x => x.Name == FindBox.SelectedItem.ToString())
+                    .FirstOrDefault();
+            }
+            string res = entity.Name + " have " + entity.Animals.Count + " animals: ";
+            foreach (var animal in entity.Animals)
+            {
+                res += animal.Name.ToString() + ", ";
+            }
+            if (res.LastIndexOf(',') == -1)
+                return res.Remove(res.LastIndexOf(':'));
+            else
+                return res.Remove(res.LastIndexOf(','));
+        }
         private void FindBox_Click(object sender, EventArgs e)
         {
             if (FindBox.SelectedItem == null)
@@ -231,26 +263,6 @@ namespace ZooFormUI
             }
             
 
-        }
-        private string FindPopUpInfo_Employee()
-        {
-            ZooKeeper entity;
-            using (ZooDbContext db = new ZooDbContext())
-            {
-                entity = db.ZooKeepers
-                    .Include(x => x.Animals)
-                    .Where(x => x.Name == FindBox.SelectedItem.ToString())
-                    .FirstOrDefault();
-            }
-            string res = entity.Name + " have " + entity.Animals.Count + " animals: ";
-            foreach (var animal in entity.Animals)
-            {
-                res += animal.Name.ToString() + ", ";
-            }
-            if (res.LastIndexOf(',') == -1)
-                return res.Remove(res.LastIndexOf(':'));
-            else
-                return res.Remove(res.LastIndexOf(','));
         }
         private void BoxFind_TextChanged(object sender, EventArgs e)
         {

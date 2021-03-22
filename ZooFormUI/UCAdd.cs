@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZooFormUI.Database;
 
@@ -23,31 +24,39 @@ namespace ZooFormUI
             }
             set => _instanse = value;
         }
-        public override void Set(string sender, object entity = null)
+        public UCAdd() : base()
+        {
+        }
+        public override async Task Set(string sender, object entity = null)
         {
             switch (sender)
             {
                 case "Animal":
-                    Instanse.LoadAnimalBase();
+                    await Instanse.LoadAnimalAsync();
                     break;
                 case "Employee":
-                    Instanse.LoadEmployeeBase();
+                    await Instanse.LoadEmployeeAsync();
                     break;
                 case "Aviary":
-                    Instanse.LoadAviaryBase();
+                    await Instanse.LoadAviaryAsync();
+                    break;
+                case "Food":
+                    await Instanse.LoadFoodAsync();
+                    break;
+                case "Kind":
+                    await Instanse.LoadKindAsync();
                     break;
                 default:
                     throw new Exception("Add: wrong statement value");
             }
         }
-        public UCAdd() : base()
-        {
-        }
         protected override void BtnBack_Click(object sender, EventArgs e) => UCDBManager.Instanse.BringToFrontOrCreate();
-        protected override void BtnAccept_Click(object sender, EventArgs e)
+        protected override async void BtnAcceptAsync_Click(object sender, EventArgs e)
         {
-            foreach (Control control in this.Controls)
+            foreach (Control control in Controls["Panel"].Controls)
             {
+                if (control is RadioButton)
+                    continue;
                 control.Focus();
                 if (!Validate())
                 {
@@ -80,9 +89,26 @@ namespace ZooFormUI
                         db.SaveChanges();
                     }
                     break;
+                case "Food":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Food;
+                        db.Foods.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Kind":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = GetEntity() as Kind;
+                        db.Kinds.Add(entity);
+                        db.SaveChanges();
+                    }
+                    break;
                 default:
                     throw new Exception("Add: can't find Statement");
             }
+            await Instanse.BringToFrontOrCreateAsync(Statement);
         }
     }
 }

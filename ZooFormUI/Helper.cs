@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ZooFormUI
@@ -29,23 +30,23 @@ namespace ZooFormUI
             }
             UCDBManager.Instanse.BringToFront();
         }
-        public static void BringToFrontOrCreate(this UCFind instanse) 
+        public static async Task BringToFrontOrCreateAsync(this UCFind instanse) 
         {
-            Thread setSize = new Thread(new ParameterizedThreadStart(MainMenu.Instanse.SetNewSize));
-            setSize.Start(new Size(500, 400));
             if (!MainMenu.Panel.Contains(UCFind.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCFind.Instanse);
                 UCFind.Instanse.Dock = DockStyle.Fill;
             }
-            UCFind.Instanse.ShowData("");
-            UCFind.Instanse.BringToFront();
+            var tasks = new List<Task>();
+            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(500, 400)));
+            tasks.Add(Task.Run(() => UCFind.Instanse.BringToFront()));
+            tasks.Add(Task.Run(() => UCFind.Instanse.ShowData("")));
+            
+            await Task.WhenAll(tasks);
         }
-        public static void BringToFrontOrCreate(this UCAdd instanse, object sender)
+        public static async Task BringToFrontOrCreateAsync(this UCAdd instanse, object sender)
         {
-            Thread setSize = new Thread(new ParameterizedThreadStart(MainMenu.Instanse.SetNewSize));
-            setSize.Start(new Size(300, 400));
-            UCAdd.Instanse.Set(sender.ToString());
+            await UCAdd.Instanse.Set(sender.ToString());
             if (!MainMenu.Panel.Contains(UCAdd.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCAdd.Instanse);
@@ -53,17 +54,21 @@ namespace ZooFormUI
             }
             UCAdd.Instanse.BringToFront();
         }
-        public static void BringToFrontOrCreate(this UCEdit instanse, object sender, object entity)
+        public static async Task BringToFrontOrCreateAsync(this UCEdit instanse, object sender, object entity)
         {
-            Thread setSize = new Thread(new ParameterizedThreadStart(MainMenu.Instanse.SetNewSize));
-            setSize.Start(new Size(300, 400));
-            UCEdit.Instanse.Set(sender.ToString(), entity);
+            if (entity == null)
+                return;
+            var tasks = new List<Task>();
+            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(300, 400)));
+            tasks.Add(UCEdit.Instanse.Set(sender.ToString(), entity));
+
             if (!MainMenu.Panel.Contains(UCEdit.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCEdit.Instanse);
                 UCEdit.Instanse.Dock = DockStyle.Fill;
             }
             UCEdit.Instanse.BringToFront();
+            await Task.WhenAll(tasks);
         }
         public static Bitmap ResizeImage(this Image image, int width, int height)
         {
