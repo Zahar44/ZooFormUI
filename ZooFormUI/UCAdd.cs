@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZooFormUI.Database;
+using ZooFormUI.Library;
+using ZooFormUI.Repos;
 
 namespace ZooFormUI
 {
@@ -63,47 +65,26 @@ namespace ZooFormUI
                     return;
                 }
             }
+            EntityProvider ep = new EntityProvider(this, Statement);
+            var entity = ep.GetEntity();
+            var repo = ep.GetRepository();
+
             switch (Statement)
             {
                 case "Animal":
-                    using (ZooDbContext db = new ZooDbContext())
-                    {
-                        var entity = GetEntity() as Animal;
-                        db.Animals.Add(entity);
-                        db.SaveChanges();
-                    }
+                    (repo as AnimalRepository).Create(entity as Animal);
                     break;
                 case "Employee":
-                    using (ZooDbContext db = new ZooDbContext())
-                    {
-                        var entity = GetEntity() as ZooKeeper;
-                        db.ZooKeepers.Add(entity);
-                        db.SaveChanges();
-                    }
+                    (repo as ZooKeeperRepository).Create(entity as ZooKeeper);
                     break;
                 case "Aviary":
-                    using (ZooDbContext db = new ZooDbContext())
-                    {
-                        var entity = GetEntity() as Aviary;
-                        db.Aviaries.Add(entity);
-                        db.SaveChanges();
-                    }
+                    (repo as AviaryRepository).Create(entity as Aviary);
                     break;
                 case "Food":
-                    using (ZooDbContext db = new ZooDbContext())
-                    {
-                        var entity = GetEntity() as Food;
-                        db.Foods.Add(entity);
-                        db.SaveChanges();
-                    }
+                    (repo as FoodRepository).Create(entity as Food);
                     break;
                 case "Kind":
-                    using (ZooDbContext db = new ZooDbContext())
-                    {
-                        var entity = GetEntity() as Kind;
-                        db.Kinds.Add(entity);
-                        db.SaveChanges();
-                    }
+                    (repo as KindRepository).Create(entity as Kind);
                     break;
                 default:
                     throw new Exception("Add: can't find Statement");

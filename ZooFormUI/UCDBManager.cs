@@ -52,7 +52,7 @@ namespace ZooFormUI
             btnAdd.Click += btnAdd_ClickContext;
             
             Button btnFind = await MakeBtnAsync("Find", 1);
-            btnFind.Click += (sender, e) => { _ = UCFind.Instanse.BringToFrontOrCreateAsync(); };
+            btnFind.Click += async (sender, e) => {  await UCFind.Instanse.BringToFrontOrCreateAsync(); };
             
             Button btnBack = await MakeBtnAsync("Back", 2);
             btnBack.Click += (sender, e) => { UCMain.Instanse.BringToFrontOrCreate(); };

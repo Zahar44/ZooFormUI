@@ -7,7 +7,11 @@ namespace ZooFormUI
 {
     public partial class MainMenu : Form
     {
+        private static Field<Panel> _panel;
+        
         private static Field<MainMenu> _instanse;
+
+        private delegate void SafeCallDelegate(Size _size);
         public static MainMenu Instanse
         {
             get
@@ -18,8 +22,6 @@ namespace ZooFormUI
             }
             set => _instanse = value;
         }
-
-        private static Field<Panel> _panel;
         public static Panel Panel
         {
             get
@@ -33,6 +35,14 @@ namespace ZooFormUI
         public MainMenu()
         {
             InitializeComponent();
+        }
+        public void SetSizeSafe(Size _size)
+        {
+            Action action = () => { Size = _size; };
+            if (this.InvokeRequired)
+                Invoke(action);
+            else
+                action();
         }
         private void MainMenu_Load(object sender, EventArgs e)
         {

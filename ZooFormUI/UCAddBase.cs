@@ -57,24 +57,6 @@ namespace ZooFormUI
             
             Controls.AddRange(new Control[] { btnAccept, btnBack, panel });
         }
-        protected virtual object GetEntity()
-        {
-            switch (Statement)
-            {
-                case "Animal":
-                    return GetAnimal();
-                case "Employee":
-                    return GetEmployee();
-                case "Aviary":
-                    return GetAviary();
-                case "Food":
-                    return GetFood();
-                case "Kind":
-                    return GetKind();
-                default:
-                    return null;
-            }
-        }
 
         /*
         private PicturePanel MakeBackBtn()
@@ -167,18 +149,6 @@ namespace ZooFormUI
             });
         }
         protected async virtual Task LoadAnimalAsync() => await LoadAnimalBaseAsync();
-        private Animal GetAnimal()
-        {
-            var panel = Controls["Panel"] as UserControl;
-            return new Animal
-            {
-                Name = panel.Controls["Name"].Text,
-                Age = Int32.Parse(panel.Controls["Age"].Text),
-                KindId = ((panel.Controls["Kind"] as ComboBox).SelectedItem as Kind).Id,
-                ZooKeeperId = ((panel.Controls["ZooKeeper"] as ComboBox).SelectedItem as ZooKeeper).Id,
-                IsPredator = (panel.Controls["Yes"] as RadioButton).Checked ? true : false
-            };
-        }
         
         // ******Kind******
         protected async Task LoadKindBaseAsync()
@@ -230,17 +200,6 @@ namespace ZooFormUI
             });
         }
         protected async virtual Task LoadKindAsync() => await LoadKindBaseAsync();
-        private Kind GetKind()
-        {
-            var panel = Controls["Panel"] as UserControl;
-            return new Kind
-            {
-                Name = panel.Controls["Name"].Text,
-                IsWormBlooded = (panel.Controls["Worm"] as RadioButton).Checked ? true : false,
-                Description = panel.Controls["Description"].Text,
-                Сonditions = panel.Controls["Сonditions"].Text,
-            };
-        }
 
         // ******Employee******
         protected async Task LoadEmployeeBaseAsync()
@@ -290,25 +249,6 @@ namespace ZooFormUI
             });
         }
         protected async virtual Task LoadEmployeeAsync() => await LoadEmployeeBaseAsync();
-        private ZooKeeper GetEmployee()
-        {
-            var panel = Controls["Panel"] as UserControl;
-            return new ZooKeeper
-            {
-                Name = panel.Controls["Name"].Text,
-                Family = new Func<Person.family>(() => {
-                    if (panel.Controls["Family"].Text == "Male")
-                        return Person.family.male;
-                    else if (panel.Controls["Family"].Text == "Female")
-                        return Person.family.female;
-                    else
-                        return Person.family.unknown;
-                })(),
-                Salary = Int32.Parse(panel.Controls["Salary"].Text),
-                Telephone = panel.Controls["Telephone"].Text,
-                Address = panel.Controls["Address"].Text
-            };
-        }
 
         // ******Aviary******
         protected async Task LoadAviaryBaseAsync()
@@ -342,15 +282,6 @@ namespace ZooFormUI
             });
         }
         protected async virtual Task LoadAviaryAsync() => await LoadAviaryBaseAsync();
-        private Aviary GetAviary()
-        {
-            var panel = Controls["Panel"] as UserControl;
-            return new Aviary
-            {
-                Address = panel.Controls["Address"].Text,
-                MaxAnimalsSize = Int32.Parse(panel.Controls["MaxAnimal"].Text),
-            };
-        }
 
         // ******Food******
         protected async Task LoadFoodBaseAsync()
@@ -406,18 +337,6 @@ namespace ZooFormUI
             });
         }
         protected async virtual Task LoadFoodAsync() => await LoadFoodBaseAsync();
-        private Food GetFood()
-        {
-            var panel = Controls["Panel"] as UserControl;
-            return new Food
-            {
-                Name = panel.Controls["Name"].Text,
-                Amount = Int32.Parse(panel.Controls["Amount"].Text),
-                Category = (panel.Controls["Category"] as ComboBox).SelectedText,
-                Freeze = (panel.Controls["Yes"] as RadioButton).Checked ? true : false,
-                RotAt = DateTime.Parse(DateTime.Now.ToString()).AddDays(int.Parse(panel.Controls["Suitability"].Text.ToString())), 
-            };
-        }
 
         // ******Validating******
         private void TbTel_Leave(object sender, CancelEventArgs e, ErrorProvider errorProvider)
@@ -456,7 +375,7 @@ namespace ZooFormUI
             TextBox boxName = sender as TextBox;
             if (isFormat(boxName.Text))
                 return;
-            bool isNumber = boxName.Text.All(x => x >= '0' && x <= '9');
+            bool isNumber = boxName.Text.All(x => x >= '0' && x <= '9' || x == '.');
 
             if (string.IsNullOrWhiteSpace(boxName.Text) || !isNumber)
             {

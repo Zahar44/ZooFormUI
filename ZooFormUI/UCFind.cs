@@ -8,13 +8,14 @@ using System.Windows.Forms;
 using ZooFormUI.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace ZooFormUI
 {
     public partial class UCFind : UserControl
     {
         private object Buffer { get; set; }
-        private EventArgs LastEvent { get;set; }
+        private string LastEvent { get;set; }
         
         private static Field<UCFind> _instanse;
         public static UCFind Instanse
@@ -76,34 +77,37 @@ namespace ZooFormUI
             btnAnimal.Text = "Animals";
             btnAnimal.Size = new Size(90, 50);
             btnAnimal.Location = new Point(20, 60);
-            btnAnimal.Click += (sender, e) => { ShowData("Animal"); };
+            btnAnimal.Click += (sender, e) => { ShowDataAsync("Animal"); };
 
             Button btnEmployee = new Button();
             btnEmployee.Text = "Employees";
             btnEmployee.Size = new Size(90, 50);
             btnEmployee.Location = new Point(20, 110);
-            btnEmployee.Click += (sender, e) => { ShowData("Employee"); };
+            btnEmployee.Click += (sender, e) => { ShowDataAsync("Employee"); };
 
             Button btnFood = new Button();
             btnFood.Text = "Foods";
             btnFood.Size = new Size(90, 50);
             btnFood.Location = new Point(20, 160);
-            btnFood.Click += (sender, e) => { ShowData("Food"); };
+            btnFood.Click += (sender, e) => { ShowDataAsync("Food"); };
 
             Button btnAviary = new Button();
             btnAviary.Text = "Aviaries";
             btnAviary.Size = new Size(90, 50);
             btnAviary.Location = new Point(20, 210);
-            btnAviary.Click += (sender, e) => { ShowData("Aviary"); };
+            btnAviary.Click += (sender, e) => { ShowDataAsync("Aviary"); };
 
-            ShowData("Animal");
+            Button btnUndo = new Button();
+            btnUndo.Text = "Undo";
+            btnUndo.Location = new Point(120, 200);
+            btnUndo.Click += (sender, e) => Undo();
 
-            this.Controls.Add(labelFind);
-            this.Controls.Add(boxFind);
-            this.Controls.Add(FindBox);
-            this.Controls.AddRange(
-                new[] { btnBack, btnEdit, btnDelete, btnAnimal, btnEmployee, btnFood, btnAviary }
-                );
+            ShowDataAsync("Animal");
+
+            Controls.AddRange( new Control[] { labelFind, boxFind, 
+                FindBox, btnBack, btnEdit, btnDelete, btnAnimal, 
+                btnEmployee, btnFood, btnAviary, btnUndo }
+            );
         }
         private void BtnEdit_Click(object sender, EventArgs e)
         {
@@ -113,65 +117,84 @@ namespace ZooFormUI
         {
             if (FindBox.SelectedItem == null)
                 return;
-            if(LastFindedOption.ToLower() == "animal")
-                using (ZooDbContext db = new ZooDbContext())
-                {
-                    var entity = FindBox.SelectedItem as Animal;
-                    var response = db.Animals
-                        .Where(x => x.Id == entity.Id)
-                        .FirstOrDefault();
-                    db.Animals.Remove(response);
-                    db.SaveChanges();
-                }
-            if (LastFindedOption.ToLower() == "employee")
-                using (ZooDbContext db = new ZooDbContext())
-                {
-                    var entity = FindBox.SelectedItem as ZooKeeper;
-                    var response = db.ZooKeepers
-                        .Include(x => x.Animals)
-                        .Where(x => x.Id == entity.Id)
-                        .FirstOrDefault();
-                    if(response.Animals.Count > 0)
+            switch (LastFindedOption)
+            {
+                case "Animal":
+                    using (ZooDbContext db = new ZooDbContext())
                     {
-                        Alert alert = new Alert();
-                        var result = alert.ShowDialog(response);
-                        if (result == DialogResult.Yes)
+                        var entity = FindBox.SelectedItem as Animal;
+                        var response = db.Animals
+                            .Where(x => x.Id == entity.Id)
+                            .FirstOrDefault();
+                        db.Animals.Remove(response);
+                        db.SaveChanges();
+                    }
+                    break;
+                case "Employee":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = FindBox.SelectedItem as ZooKeeper;
+                        var response = db.ZooKeepers
+                            .Include(x => x.Animals)
+                            .Where(x => x.Id == entity.Id)
+                            .FirstOrDefault();
+                        if (response.Animals.Count > 0)
+                        {
+                            Alert alert = new Alert();
+                            var result = alert.ShowDialog(response);
+                            if (result == DialogResult.Yes)
+                            {
+                                db.ZooKeepers.Remove(response);
+                                db.SaveChanges();
+                            }
+                        }
+                        else
                         {
                             db.ZooKeepers.Remove(response);
                             db.SaveChanges();
                         }
                     }
-                    else
+                    break;
+                case "Food":
+                    using (ZooDbContext db = new ZooDbContext())
                     {
-                        db.ZooKeepers.Remove(response);
+                        var entity = FindBox.SelectedItem as Food;
+                        Buffer = entity;
+                        var response = db.Foods
+                            .Where(x => x.Id == entity.Id)
+                            .FirstOrDefault();
+                        db.Foods.Remove(response);
                         db.SaveChanges();
                     }
-                }
-            if (LastFindedOption.ToLower() == "food")
-                using (ZooDbContext db = new ZooDbContext())
-                {
-                    var entity = FindBox.SelectedItem as Food;
-                    var response = db.Foods
-                        .Where(x => x.Id == entity.Id)
-                        .FirstOrDefault();
-                    db.Foods.Remove(response);
-                    db.SaveChanges();
-                }
-            if (LastFindedOption.ToLower() == "aviary")
-                using (ZooDbContext db = new ZooDbContext())
-                {
-                    var entity = FindBox.SelectedItem as Aviary;
-                    var response = db.Aviaries
-                        .Where(x => x.Id == entity.Id)
-                        .FirstOrDefault();
-                    Buffer = response;
-                    db.Aviaries.Remove(response);
-                    db.SaveChanges();
-                }
-            LastEvent = e;
-            ShowData(LastFindedOption);
+                    break;
+                case "Aviary":
+                    using (ZooDbContext db = new ZooDbContext())
+                    {
+                        var entity = FindBox.SelectedItem as Aviary;
+                        var response = db.Aviaries
+                            .AsNoTracking()
+                            .Where(x => x.Id == entity.Id)
+                            .FirstOrDefault();
+                        Buffer = response;
+                        db.Aviaries.Remove(response);
+                        db.SaveChanges();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            LastEvent = "BtnDelete_Click";
+            ShowDataAsync(LastFindedOption);
         }
-        public void ShowData(string findValue)
+        public void ShowDataAsync(string findValue)
+        {
+            Action action = () => ShowDataAsyncSafe(findValue);
+            if (InvokeRequired)
+                Invoke(action);
+            else
+                action();
+        }
+        private void ShowDataAsyncSafe(string findValue)
         {
             if (findValue == "")
                 findValue = LastFindedOption;
@@ -300,6 +323,33 @@ namespace ZooFormUI
             FindBox.Items.Clear();
             foreach (var el in items)
                 FindBox.Items.Add(el);
+        }
+    
+        private void Undo()
+        {
+            if (Buffer == null)
+                return;
+            switch (LastEvent)
+            {
+                case "BtnDelete_Click":
+                    UndoBtnDelete_Click();
+                    break;
+                default:
+                    break;
+            }
+            ShowDataAsync(LastFindedOption);
+        }
+
+        private void UndoBtnDelete_Click()
+        {
+            using (ZooDbContext db = new ZooDbContext())
+            {
+                var entity = Buffer as Food;
+                entity.Id = 0;
+                db.Foods.Add(entity);
+                db.SaveChanges();
+                Buffer = null;
+            }
         }
     }
 }

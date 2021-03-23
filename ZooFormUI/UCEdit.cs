@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZooFormUI.Database;
+using ZooFormUI.Library;
+using ZooFormUI.Repos;
 
 namespace ZooFormUI
 {
@@ -123,7 +125,7 @@ namespace ZooFormUI
             panel.Controls["Name"].Text = _entity.Name;
             panel.Controls["Amount"].Text = _entity.Amount.ToString();
             panel.Controls["Category"].Text = _entity.Category;
-            panel.Controls["Suitability"].Text = (DateTime.Parse(_entity.RotAt.ToString()) - DateTime.Now).TotalDays.ToString();
+            panel.Controls["Suitability"].Text = (DateTime.Parse(_entity.RotAt.ToString()) - DateTime.Now).TotalDays.ToString().ToString();
             if(_entity.Freeze)
                 (panel.Controls["Yes"] as RadioButton).Checked = true;
             else
@@ -142,6 +144,31 @@ namespace ZooFormUI
                     return;
                 }
             }
+            var ep = new EntityProvider(this, Statement);
+            var entity = ep.GetEntity();
+            var repo = ep.GetRepository();
+
+            switch (Statement)
+            {
+                case "Animal":
+                    (repo as AnimalRepository).Update(entity as Animal);
+                    break;
+                case "Employee":
+                    (repo as ZooKeeperRepository).Update(entity as ZooKeeper);
+                    break;
+                case "Aviary":
+                    (repo as AviaryRepository).Update(entity as Aviary);
+                    break;
+                case "Food":
+                    (repo as FoodRepository).Update(entity as Food);
+                    break;
+                case "Kind":
+                    (repo as KindRepository).Update(entity as Kind);
+                    break;
+                default:
+                    throw new Exception("Add: can't find Statement");
+            }
+            /*
             switch (Statement)
             {
                 case "Animal":
@@ -233,6 +260,7 @@ namespace ZooFormUI
                 default:
                     break;
             }
+            */
             BtnBack_Click(sender, e);
         }
         private void UCEdit_Load(object sender, EventArgs e)

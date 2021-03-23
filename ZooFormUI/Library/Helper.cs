@@ -38,9 +38,9 @@ namespace ZooFormUI
                 UCFind.Instanse.Dock = DockStyle.Fill;
             }
             var tasks = new List<Task>();
-            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(500, 400)));
-            tasks.Add(Task.Run(() => UCFind.Instanse.BringToFront()));
-            tasks.Add(Task.Run(() => UCFind.Instanse.ShowData("")));
+            tasks.Add(Task.Run(() => MainMenu.Instanse.SetSizeSafe(new Size(500, 400))));
+            tasks.Add(Task.Run(() => UCFind.Instanse.ShowDataAsync("")));
+            UCFind.Instanse.BringToFront();
             
             await Task.WhenAll(tasks);
         }
@@ -59,7 +59,7 @@ namespace ZooFormUI
             if (entity == null)
                 return;
             var tasks = new List<Task>();
-            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(300, 400)));
+            tasks.Add(Task.Run(() => MainMenu.Instanse.SetSizeSafe(new Size(300, 400))));
             tasks.Add(UCEdit.Instanse.Set(sender.ToString(), entity));
 
             if (!MainMenu.Panel.Contains(UCEdit.Instanse))
