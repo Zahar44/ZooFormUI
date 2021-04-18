@@ -1,7 +1,7 @@
 ﻿
-namespace ZooFormUI
+namespace ZooFormUI.UserControls
 {
-    partial class UCAddBase
+    partial class UCAddAviary
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,12 +31,11 @@ namespace ZooFormUI
         {
             this.SuspendLayout();
             // 
-            // UCAddBase
+            // UCAddAviary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "UCAddBase";
-            this.Load += new System.EventHandler(this.UCAddBase_Load);
+            this.Name = "UCAddAviary";
             this.ResumeLayout(false);
 
         }

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZooFormUI.Database;
+using ZooFormUI.UserControls;
 
 namespace ZooFormUI
 {
@@ -40,13 +41,13 @@ namespace ZooFormUI
             this.Height = 400;
             List<Button> buttons = new List<Button>();
 
-            Button btnDBManager = await MakeBtnAsync("Database", 0);
+            Button btnDBManager = await Desiner.MakeBigButtonAsync("Database", new Point(70, 50));
             ConnectingAnimation(btnDBManager);
 
-            Button btnSettings = await MakeBtnAsync("Settings", 1);
-            btnSettings.Click += (sender, e) => {  };
+            Button btnSettings = await Desiner.MakeBigButtonAsync("About", new Point(70, 50 + 15 * 1 + 80));
+            btnSettings.Click += (sender, e) => UCAbout.Instanse.BringToFrontOrCreate();
 
-            Button btnExit = await MakeBtnAsync("Exit", 2);
+            Button btnExit = await Desiner.MakeBigButtonAsync("Exit", new Point(70, 50 + 15 * 2 + 80 * 2));
             btnExit.Click += (sender, e) => MainMenu.Instanse.Close();
 
             this.Controls.AddRange(new Control[] { btnDBManager, btnSettings, btnExit });

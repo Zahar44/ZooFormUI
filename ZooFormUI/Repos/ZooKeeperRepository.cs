@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace ZooFormUI.Repos
         }
         public ZooKeeper Create(ZooKeeper zk)
         {
+            dbContext.ZooKeepers.Attach(zk);
             dbContext.ZooKeepers.Add(zk);
             dbContext.SaveChanges();
             return zk;
@@ -22,7 +24,9 @@ namespace ZooFormUI.Repos
 
         public ZooKeeper Get(int id)
         {
-            return dbContext.ZooKeepers.FirstOrDefault(x => x.Id == id);
+            return dbContext.ZooKeepers
+                .Include(x => x.Animals)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public List<ZooKeeper> GetAll()

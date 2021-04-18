@@ -10,5 +10,14 @@ namespace ZooFormUI.Database
         public int Salary { get; set; }
         public string Address { get; set; }
         public string Telephone { get; set; }
+
+
+
+        public Employee() : base()
+        {
+            Salary = 0;
+            Address = "";
+            Telephone = "(xxx)xxx-xxxx";
+        }
     }
 }

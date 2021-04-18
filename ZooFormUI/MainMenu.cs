@@ -11,6 +11,10 @@ namespace ZooFormUI
         
         private static Field<MainMenu> _instanse;
 
+        private bool undoKeyActivated = false;
+
+        private static UCAddBase control;
+
         private delegate void SafeCallDelegate(Size _size);
         public static MainMenu Instanse
         {
@@ -35,6 +39,43 @@ namespace ZooFormUI
         public MainMenu()
         {
             InitializeComponent();
+            KeyPreview = true;
+        }
+
+        public void UndoKeyActivate()
+        {
+            if(!undoKeyActivated)
+                KeyDown += UndoKey;
+            undoKeyActivated = true;
+        }
+        public void UndoKeyKill()
+        {
+            KeyDown -= UndoKey;
+            undoKeyActivated = false;
+        }
+        public void UndoKeyUpdate(UCAddBase _control)
+        {
+            control = _control;
+        }
+
+        private void UndoKey(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+            {
+                control.UndoLastChanges();
+            }
+        }
+
+        public void ReallyCenterToScreen()
+        {
+            Screen screen = Screen.FromControl(this);
+
+            Rectangle workingArea = screen.WorkingArea;
+            this.Location = new Point()
+            {
+                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
         }
         public void SetSizeSafe(Size _size)
         {
