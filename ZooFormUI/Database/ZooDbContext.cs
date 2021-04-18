@@ -19,6 +19,9 @@ namespace ZooFormUI.Database
         public DbSet<Aviary> Aviaries { get; set; }
         public DbSet<Kind> Kinds { get; set; }
         public DbSet<Food> Foods { get; set; }
+        public DbSet<AnimalFood> AnimalFoods { get; set; }
+        public DbSet<AviaryKind> AviaryKinds { get; set; }
+
         public ZooDbContext()
         {
             Database.EnsureCreated();

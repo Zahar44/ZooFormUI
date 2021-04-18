@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ZooFormUI
 {
-    internal class PicturePanel : Panel
+    public class PicturePanel : Panel
     {
         public PicturePanel()
         {

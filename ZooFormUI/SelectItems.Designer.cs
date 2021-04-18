@@ -1,14 +1,14 @@
 ﻿
 namespace ZooFormUI
 {
-    partial class UCAdd
+    partial class SelectItems
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -21,21 +21,24 @@ namespace ZooFormUI
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
+        #region Windows Form Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             this.SuspendLayout();
             // 
-            // UCAdd
+            // SelectItems
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "UCAdd";
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Name = "SelectItems";
+            this.Text = "SelectItems";
+            this.Load += new System.EventHandler(this.SelectItems_Load);
             this.ResumeLayout(false);
 
         }

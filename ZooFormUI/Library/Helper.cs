@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ZooFormUI.UserControls;
 
 namespace ZooFormUI
 {
@@ -23,12 +24,23 @@ namespace ZooFormUI
         }
         public static void BringToFrontOrCreate(this UCDBManager instanse)
         {
+            MainMenu.Instanse.SetSizeSafe(new Size(300, 400));
             if (!MainMenu.Panel.Contains(UCDBManager.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCDBManager.Instanse);
                 UCDBManager.Instanse.Dock = DockStyle.Fill;
             }
             UCDBManager.Instanse.BringToFront();
+        }
+        public static void BringToFrontOrCreate(this UCAbout instanse)
+        {
+            MainMenu.Instanse.SetSizeSafe(new Size(300, 400));
+            if (!MainMenu.Panel.Contains(UCAbout.Instanse))
+            {
+                MainMenu.Panel.Controls.Add(UCAbout.Instanse);
+                UCAbout.Instanse.Dock = DockStyle.Fill;
+            }
+            UCAbout.Instanse.BringToFront();
         }
         public static async Task BringToFrontOrCreateAsync(this UCFind instanse) 
         {
@@ -38,37 +50,47 @@ namespace ZooFormUI
                 UCFind.Instanse.Dock = DockStyle.Fill;
             }
             var tasks = new List<Task>();
-            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(500, 400)));
-            tasks.Add(Task.Run(() => UCFind.Instanse.BringToFront()));
-            tasks.Add(Task.Run(() => UCFind.Instanse.ShowData("")));
+            tasks.Add(Task.Run(() => MainMenu.Instanse.SetSizeSafe(UCFind.Instanse.SizeOfPage)));
+            tasks.Add(Task.Run(() => UCFind.Instanse.ShowDataAsync()));
+            UCFind.Instanse.BringToFront();
             
             await Task.WhenAll(tasks);
         }
-        public static async Task BringToFrontOrCreateAsync(this UCAdd instanse, object sender)
+        public static void BringToFrontOrCreate(this UCAdd instanse, UserControl sender)
         {
-            await UCAdd.Instanse.Set(sender.ToString());
             if (!MainMenu.Panel.Contains(UCAdd.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCAdd.Instanse);
                 UCAdd.Instanse.Dock = DockStyle.Fill;
             }
+            if (!UCAdd.Panel.Contains(sender))
+            {
+                UCAdd.Panel.Controls.Add(sender);
+                sender.Dock = DockStyle.Fill;
+            }
+            sender.BringToFront();
+            UCAdd.Instanse.LastAddedControl = (UCAddBase)sender;
             UCAdd.Instanse.BringToFront();
         }
-        public static async Task BringToFrontOrCreateAsync(this UCEdit instanse, object sender, object entity)
+        public static void BringToFrontOrCreate(this UCEdit instanse, UserControl sender, object entity)
         {
             if (entity == null)
                 return;
-            var tasks = new List<Task>();
-            tasks.Add(Task.Run(() => MainMenu.Instanse.Size = new Size(300, 400)));
-            tasks.Add(UCEdit.Instanse.Set(sender.ToString(), entity));
-
             if (!MainMenu.Panel.Contains(UCEdit.Instanse))
             {
                 MainMenu.Panel.Controls.Add(UCEdit.Instanse);
                 UCEdit.Instanse.Dock = DockStyle.Fill;
             }
+            if (!UCEdit.Panel.Contains(sender))
+            {
+                UCEdit.Panel.Controls.Add(sender);
+                sender.Dock = DockStyle.Fill;
+            }
+            sender.BringToFront();
+            UCEdit.Instanse.LastAddedControl = (UCAddBase)sender;
+            UCEdit.Instanse.Entity = entity;
+            MainMenu.Instanse.SetSizeSafe(new Size(300, 400));
             UCEdit.Instanse.BringToFront();
-            await Task.WhenAll(tasks);
         }
         public static Bitmap ResizeImage(this Image image, int width, int height)
         {
