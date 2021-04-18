@@ -28,7 +28,7 @@ namespace ZooFormUI
         {
             await Task.Run(() =>
             {
-                ZooDbContext db = new ZooDbContext();
+                IZooDbContext db = new ZooDbContext();
                 db.SaveChanges();
             });
             ZooDbContext.Connected = true;

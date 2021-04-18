@@ -15,7 +15,10 @@ namespace ZooFormUI.Repos
         }
         public Aviary Create(Aviary aviary)
         {
+            dbContext.Aviaries.Attach(aviary);
             dbContext.Aviaries.Add(aviary);
+            if (aviary.AviaryKinds != null)
+                dbContext.AviaryKinds.AddRange(aviary.AviaryKinds);
             dbContext.SaveChanges();
             return aviary;
         }
@@ -42,7 +45,10 @@ namespace ZooFormUI.Repos
 
         public Aviary Update(Aviary aviary)
         {
+            dbContext.Aviaries.Attach(aviary);
             dbContext.Aviaries.Update(aviary);
+            if(aviary.AviaryKinds != null)
+                dbContext.AviaryKinds.UpdateRange(aviary.AviaryKinds);
             dbContext.SaveChanges();
             return aviary;
         }

@@ -44,7 +44,7 @@ namespace ZooFormUI
             label.Size = new Size(250, 50);
             label.Dock = DockStyle.Top;
             label.TextAlign = ContentAlignment.MiddleCenter;
-            label.Text = "If you deleted " + zooKeeper.Name + "\nalso will be deleted:";
+            label.Text = "If you deleted " + zooKeeper.FullName + "\nalso will be deleted:";
 
             ListBox listBox = new ListBox();
             foreach (var animal in zooKeeper.Animals)

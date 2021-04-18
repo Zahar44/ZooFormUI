@@ -5,7 +5,7 @@ using ZooFormUI.Database;
 
 namespace ZooFormUI.Repos
 {
-    interface IFoodRepository
+    public interface IFoodRepository
     {
         List<Food> GetAll();
 

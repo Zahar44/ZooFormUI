@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using ZooFormUI.Database;
 
 namespace ZooFormUI.Repos
@@ -14,19 +16,28 @@ namespace ZooFormUI.Repos
         }
         public Animal Create(Animal animal)
         {
+            dbContext.Animals.Attach(animal);
             dbContext.Animals.Add(animal);
+            if(animal.AnimalFoods != null)
+                dbContext.AnimalFoods.AddRange(animal.AnimalFoods);
             dbContext.SaveChanges();
             return animal;
         }
 
         public Animal Get(int id)
         {
-            return dbContext.Animals.FirstOrDefault(x => x.Id == id);
+            return dbContext
+                .Animals
+                .Include(x => x.Kind)
+                .Include(x => x.ZooKeeper)
+                .Include(x => x.AnimalFoods)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public List<Animal> GetAll()
         {
-            return dbContext.Animals.ToList();
+            return dbContext.Animals
+                .ToList();
         }
 
         public void Remove(int id)
@@ -41,8 +52,12 @@ namespace ZooFormUI.Repos
 
         public Animal Update(Animal animal)
         {
-            //var response = dbContext.Animals.FirstOrDefault(x => x.Id == animal.Id);
+            dbContext.Animals.Attach(animal);
+            animal.Kind = dbContext.Kinds.FirstOrDefault(x => x.Id == animal.KindId);
+            animal.ZooKeeper = dbContext.ZooKeepers.FirstOrDefault(x => x.Id == animal.ZooKeeperId);
             dbContext.Animals.Update(animal);
+            if(animal.AnimalFoods != null)
+                dbContext.AnimalFoods.UpdateRange(animal.AnimalFoods);
             dbContext.SaveChanges();
             return animal;
         }
